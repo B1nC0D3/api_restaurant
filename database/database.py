@@ -1,11 +1,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine('postgresql+psycopg2://postgres:admin@localhost:5432/restaurant')
+from settings import settings
+
+engine = create_engine(settings.database_url)
 
 Session = sessionmaker(
     engine,
-    autocommit=False,
     autoflush=False,
 )
 
