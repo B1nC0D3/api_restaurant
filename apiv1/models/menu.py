@@ -10,7 +10,6 @@ class MenuUpdate(BaseItem):
 
 
 class MenuResponse(BaseItem):
-
     id: str
     submenus_count: int
     dishes_count: int
