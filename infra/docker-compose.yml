@@ -10,11 +10,15 @@ services:
     env_file:
       - ../.env
   web:
-    build: ../
+    build:
+      context: ../
+      dockerfile: Dockerfile
     restart: always
     env_file:
       - ../.env
     ports:
       - "8000:8000"
+    volumes:
+      - ../:/app
     depends_on:
       - db
