@@ -82,6 +82,7 @@ profile_default/
 ipython_config.py
 
 # pyenv
+*.db
 .python-version
 
 # pipenv
