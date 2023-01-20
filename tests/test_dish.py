@@ -125,3 +125,18 @@ class TestDish:
         response = client.post(DISHES_URL, json=data)
 
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
+    def test_dish_didnt_create_without_submenu(self, client):
+        data = {
+            'title': 'test title',
+            'description': 'test description',
+            'price': 10.50,
+        }
+        response_data = {
+            'detail': 'Create submenu first'
+        }
+
+        response = client.post(DISHES_URL, json=data)
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+        assert response.json() == response_data
