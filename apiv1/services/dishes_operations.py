@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 
 from apiv1.models.dish import DishCreate, DishUpdate
-from database.tables import Dish
+from database.tables import Dish, Submenu
 from .base import BaseService
 
 
@@ -20,6 +20,7 @@ class DishService(BaseService):
         return dish
 
     def create(self, submenu_id: int, dish_data: DishCreate) -> Dish:
+        self._check_submenu_existence(submenu_id)
         dish = Dish(**dish_data.dict(), submenu_id=submenu_id)
         self.session.add(dish)
         self.session.commit()
@@ -52,3 +53,13 @@ class DishService(BaseService):
                 detail='dish not found'
             )
         return dish
+
+    def _check_submenu_existence(self, submenu_id: int) -> None:
+        submenu = (self.session
+                   .query(Submenu)
+                   .filter(Submenu.id == submenu_id)
+                   .first()
+                   )
+        if not submenu:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail='Submenu not found')
