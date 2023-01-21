@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 
 from apiv1.models.submenu import SubmenuCreate, SubmenuUpdate
-from database.tables import Dish, Submenu, Menu
+from database.tables import Dish, Menu, Submenu
 from .base import BaseService
 
 
