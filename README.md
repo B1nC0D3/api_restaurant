@@ -7,14 +7,12 @@
 ## Запуск приложения
 Перед запуском сервера необходимо наполнить .env-файл по аналогии с примером в репозитории
 
-В корневой папке скачанного репозитория выполните:
+В папке `infra` скачанного репозитория выполните:
 ```
-    python3 -m venv venv # use 'python' instead 'python3' for Win
-    source venv/bin/activate # source venv/Scripts/activate for Win
-    pip3 install -r requirements.txt
-    uvicorn main:app
+    docker-compose up -d # для запуска основного приложения
+    docker-compose -f docker-compose.test.yml up -d # для запуска контейнера с тестами
 ```
- API будет доступен по адресу `127.0.0.1`. Документация доступна по `127.0.0.1/docs`.
+ API будет доступен по адресу `localhost:8000`. Документация доступна по `localhost:8000/docs`.
 
  ---
 
@@ -23,4 +21,6 @@
 - Python 3.11
 - FastAPI
 - SQLAlchemy
-- PostgresSQL 
+- PostgresSQL
+- Pytest
+- Docker
