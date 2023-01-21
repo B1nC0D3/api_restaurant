@@ -137,10 +137,10 @@ class TestSubmenu:
             'description': 'description'
         }
         response_data = {
-            'detail': 'Menu not found'
+            'detail': 'menu not found'
         }
 
-        response = client.post(SUBMENU_URL, json=data)
+        response = client.post('/api/v1/menus/111/submenus', json=data)
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
         assert response.json() == response_data

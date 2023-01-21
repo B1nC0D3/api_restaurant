@@ -77,4 +77,4 @@ class SubmenuService(BaseService):
                 )
         if not menu:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                detail='Submenu not found')
+                                detail='menu not found')

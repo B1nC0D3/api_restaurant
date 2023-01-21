@@ -62,4 +62,4 @@ class DishService(BaseService):
                    )
         if not submenu:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                detail='Submenu not found')
+                                detail='submenu not found')

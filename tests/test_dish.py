@@ -133,10 +133,10 @@ class TestDish:
             'price': 10.50,
         }
         response_data = {
-            'detail': 'Create submenu first'
+            'detail': 'submenu not found'
         }
 
-        response = client.post(DISHES_URL, json=data)
+        response = client.post('/api/v1/menus/1/submenus/111/dishes', json=data)
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
         assert response.json() == response_data
