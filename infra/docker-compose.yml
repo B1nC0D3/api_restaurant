@@ -9,6 +9,12 @@ services:
       - /var/lib/postgresql/data/
     env_file:
       - ../.env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   web:
     build:
       context: ../
@@ -21,4 +27,5 @@ services:
     volumes:
       - ../:/app
     depends_on:
-      - db
+      db:
+        condition: service_healthy
