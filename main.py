@@ -15,3 +15,5 @@ app.add_middleware(
         allow_headers=['*'],
 )
 app.include_router(routes_v1.router)
+
+# async start
