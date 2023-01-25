@@ -8,34 +8,34 @@ router = APIRouter(
 
 
 @router.get('/', response_model=list[DishResponse])
-def get_dishes(menu_id: int, submenu_id: int,
-               dish_service: DishService = Depends()):
-    return dish_service.get_many(submenu_id)
+async def get_dishes(menu_id: int, submenu_id: int,
+                     dish_service: DishService = Depends()):
+    return await dish_service.get_many(submenu_id)
 
 
 @router.get('/{dish_id}', response_model=DishResponse)
-def get_dish(menu_id: int, submenu_id: int,
-             dish_id: int, dish_service: DishService = Depends()):
-    return dish_service.get(submenu_id, dish_id)
+async def get_dish(menu_id: int, submenu_id: int,
+                   dish_id: int, dish_service: DishService = Depends()):
+    return await dish_service.get(submenu_id, dish_id)
 
 
 @router.post('/', response_model=DishResponse,
              status_code=status.HTTP_201_CREATED)
-def create_dish(menu_id: int, submenu_id: int,
+async def create_dish(menu_id: int, submenu_id: int,
                 dish_data: DishCreate, dish_service: DishService = Depends()):
-    return dish_service.create(submenu_id, dish_data)
+    return await dish_service.create(submenu_id, dish_data)
 
 
 @router.patch('/{dish_id}', response_model=DishResponse)
-def update_dish(menu_id: int, submenu_id: int, dish_id: int,
+async def update_dish(menu_id: int, submenu_id: int, dish_id: int,
                 dish_data: DishUpdate, dish_service: DishService = Depends()):
-    return dish_service.update(submenu_id, dish_id, dish_data)
+    return await dish_service.update(submenu_id, dish_id, dish_data)
 
 
 @router.delete('/{dish_id}', status_code=status.HTTP_200_OK)
-def delete_dish(menu_id: int, submenu_id: int,
+async def delete_dish(menu_id: int, submenu_id: int,
                 dish_id: int, dish_service: DishService = Depends()):
-    dish_service.delete(submenu_id, dish_id)
+    await dish_service.delete(submenu_id, dish_id)
     return {
         'status': True,
         'message': 'The dish has been deleted'
