@@ -2,8 +2,8 @@ from fastapi import HTTPException, status
 from sqlalchemy import select
 
 from apiv1.models.menu import DishCreate, DishUpdate
+from apiv1.services.base import BaseService
 from database.tables import Dish, Submenu
-from .base import BaseService
 
 
 class DishService(BaseService):

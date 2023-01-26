@@ -32,5 +32,18 @@ class Submenu(BaseMenu, Base):
 class Menu(BaseMenu, Base):
     __tablename__ = 'menus'
 
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), index=True)
+    user = relationship('User', back_populates='menus')
     submenus = relationship('Submenu', back_populates='menu',
                             lazy='joined', cascade='all, delete, delete-orphan')
+
+
+class User(Base):
+    __tablename__ = 'users'
+
+    id = Column(Integer, primary_key=True)
+    username = Column(String, unique=True)
+    email = Column(String, unique=True)
+    password_hash = Column(String)
+    menus = relationship('Menu', back_populates='user',
+                         cascade='all, delete, delete-orphan')

@@ -3,8 +3,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
 from apiv1.models.menu import SubmenuCreate, SubmenuUpdate
+from apiv1.services.base import BaseService
 from database.tables import Menu, Submenu
-from .base import BaseService
 
 
 class SubmenuService(BaseService):
