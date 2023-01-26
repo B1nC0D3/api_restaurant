@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from sqlalchemy import select
 
-from apiv1.models.dish import DishCreate, DishUpdate
+from apiv1.models.menu import DishCreate, DishUpdate
 from database.tables import Dish, Submenu
 from .base import BaseService
 
@@ -16,7 +16,7 @@ class DishService(BaseService):
                 select(Dish)
                 .filter(Dish.submenu_id == submenu_id)
         )
-        return dish.scalars().all()
+        return dish.unique().scalars().all()
 
     async def create(self, submenu_id: int, dish_data: DishCreate) -> Dish:
         await self._check_submenu_existence(submenu_id)
