@@ -16,7 +16,7 @@ class Dish(BaseMenu, Base):
     id = Column(Integer, primary_key=True)
     price = Column(Numeric(10, 2))
     submenu_id = Column(Integer, ForeignKey('submenus.id', ondelete='CASCADE'), index=True)
-    submenu = relationship('Submenu', back_populates='dishes')
+    submenu = relationship('Submenu', back_populates='dishes', lazy='joined')
 
 
 class Submenu(BaseMenu, Base):
@@ -24,11 +24,13 @@ class Submenu(BaseMenu, Base):
 
     id = Column(Integer, primary_key=True)
     menu_id = Column(Integer, ForeignKey('menus.id', ondelete='CASCADE'), index=True)
-    menu = relationship('Menu', back_populates='submenus', lazy='selectin')
-    dishes = relationship('Dish', back_populates='submenu')
+    menu = relationship('Menu', back_populates='submenus', lazy='joined')
+    dishes = relationship('Dish', back_populates='submenu',
+                          lazy='joined', cascade='all, delete, delete-orphan')
 
 
 class Menu(BaseMenu, Base):
     __tablename__ = 'menus'
 
-    submenus = relationship('Submenu', back_populates='menu', lazy='selectin')
+    submenus = relationship('Submenu', back_populates='menu',
+                            lazy='joined', cascade='all, delete, delete-orphan')
