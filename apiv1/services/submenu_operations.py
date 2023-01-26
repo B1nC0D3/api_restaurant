@@ -1,8 +1,9 @@
 from fastapi import HTTPException, status
-from sqlalchemy import select, func
+from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
-from apiv1.models.submenu import SubmenuCreate, SubmenuUpdate
-from database.tables import Dish, Menu, Submenu
+from apiv1.models.menu import SubmenuCreate, SubmenuUpdate
+from database.tables import Menu, Submenu
 from .base import BaseService
 
 
@@ -13,10 +14,9 @@ class SubmenuService(BaseService):
 
     async def get_many(self, menu_id: int) -> list[Submenu]:
         submenus = await self.session.execute(select(Submenu)
-                                              .filter(Submenu.menu_id == menu_id))
-        submenus = submenus.scalars().all()
-        for submenu in submenus:
-            submenu.dishes_count = await self._get_dishes_count(submenu.id)
+                                              .filter(Submenu.menu_id == menu_id)
+                                              .options(selectinload(Submenu.dishes)))
+        submenus = submenus.unique().scalars().all()
         return submenus
 
     async def create(self, menu_id: int, submenu_data: SubmenuCreate) -> Submenu:
@@ -24,7 +24,7 @@ class SubmenuService(BaseService):
         submenu = Submenu(**submenu_data.dict(), menu_id=menu_id)
         self.session.add(submenu)
         await self.session.commit()
-        submenu.dishes_count = await self._get_dishes_count(submenu.id)
+        submenu = await self._get(menu_id, submenu.id)
         return submenu
 
     async def update(self, menu_id: int, submenu_id: int,
@@ -52,16 +52,7 @@ class SubmenuService(BaseService):
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail='submenu not found'
             )
-        submenu.dishes_count = await self._get_dishes_count(submenu_id)
         return submenu
-
-    async def _get_dishes_count(self, submenu_id: int) -> int:
-        dishes_count = await self.session.execute(
-                select(func.count(Dish.id))
-                .select_from(Submenu)
-                .join(Submenu.dishes)
-                .filter(Submenu.id == submenu_id))
-        return dishes_count.scalars().first()
 
     async def _check_menu_exists(self, menu_id: int):
         menu = await self.session.execute(select(Menu)
