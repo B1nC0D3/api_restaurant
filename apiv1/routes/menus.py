@@ -28,10 +28,6 @@ async def update_menu(menu_id: int, menu_data: MenuUpdate, menu_service: MenuSer
     return await menu_service.update(menu_id, menu_data)
 
 
-@router.delete('/{menu_id}', status_code=status.HTTP_200_OK)
+@router.delete('/{menu_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_menu(menu_id: int, menu_service: MenuService = Depends()):
     await menu_service.delete(menu_id)
-    return {
-        'status': True,
-        'message': 'The menu has been deleted'
-    }

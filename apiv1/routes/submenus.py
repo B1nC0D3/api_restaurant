@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, status
 
-from apiv1.models.submenu import SubmenuCreate, SubmenuResponse, SubmenuUpdate
+from apiv1.models.menu import SubmenuCreate, SubmenuResponse, SubmenuUpdate
 from apiv1.services.submenu_operations import SubmenuService
 
 router = APIRouter(
@@ -30,10 +30,6 @@ async def update_submenu(menu_id: int, submenu_id: int,
     return await submenu_service.update(menu_id, submenu_id, submenu_data)
 
 
-@router.delete('/{submenu_id}', status_code=status.HTTP_200_OK)
+@router.delete('/{submenu_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_submenu(menu_id: int, submenu_id: int, submenu_service: SubmenuService = Depends()):
     await submenu_service.delete(menu_id, submenu_id)
-    return {
-        'status': True,
-        'message': 'The submenu has been deleted'
-    }
