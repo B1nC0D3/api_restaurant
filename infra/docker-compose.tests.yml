@@ -2,20 +2,6 @@ version: '3.8'
 
 services:
 
-  test_web:
-    container_name: test_restaurant_web
-    build:
-      context: ../
-      dockerfile: Dockerfile
-    env_file:
-      - ../.env
-    command: "python -m pytest -vv"
-    volumes:
-      - ../:/app
-    depends_on:
-      db:
-        condition: service_healthy
-
   db:
     container_name: test_restaurant_db
     image: postgres:15.1-alpine
@@ -29,3 +15,17 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  test_web:
+    container_name: test_restaurant_web
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    env_file:
+      - ../.env
+    command: "python -m pytest -vv"
+    volumes:
+      - ../:/app
+    depends_on:
+      db:
+        condition: service_healthy
