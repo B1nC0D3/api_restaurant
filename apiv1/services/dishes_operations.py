@@ -44,12 +44,13 @@ class DishService(BaseService):
                 .filter(Dish.id == dish_id)
                 .filter(Dish.submenu_id == submenu_id)
         )
+        dish = dish.scalars().first()
         if not dish:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail='dish not found'
             )
-        return dish.scalars().first()
+        return dish
 
     async def _check_submenu_existence(self, submenu_id: int) -> None:
         submenu = await self.session.execute(

@@ -4,6 +4,7 @@ services:
 
   db:
     image: postgres:15.1-alpine
+    container_name: restaurant_db
     restart: always
     volumes:
       - /var/lib/postgresql/data/
@@ -16,6 +17,7 @@ services:
       retries: 5
 
   web:
+    container_name: restaurant_web
     build:
       context: ../
       dockerfile: Dockerfile

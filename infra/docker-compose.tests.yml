@@ -3,12 +3,13 @@ version: '3.8'
 services:
 
   test_web:
+    container_name: test_restaurant_web
     build:
       context: ../
       dockerfile: Dockerfile
     env_file:
       - ../.env
-    command: "pytest -vv"
+    command: "python -m pytest -vv"
     volumes:
       - ../:/app
     depends_on:
@@ -16,6 +17,7 @@ services:
         condition: service_healthy
 
   db:
+    container_name: test_restaurant_db
     image: postgres:15.1-alpine
     restart: always
     volumes:
