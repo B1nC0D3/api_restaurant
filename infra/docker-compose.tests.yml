@@ -16,6 +16,23 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:latest
+    container_name: restaurant_redis
+    restart: always
+    volumes:
+      - ./redis/data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    expose:
+      - 6379
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 20s
+      retries: 100
+
   test_web:
     container_name: test_restaurant_web
     build:
@@ -28,4 +45,6 @@ services:
       - ../:/app
     depends_on:
       db:
+        condition: service_healthy
+      redis:
         condition: service_healthy

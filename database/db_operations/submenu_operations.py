@@ -52,12 +52,14 @@ class SubmenuOperations(AbstractOperations):
             )
         return await self._submenu_data_to_model(submenu.first())
 
-    async def delete(self, menu_id: int, submenu_id: int) -> None:
+    async def delete(self, menu_id: int, submenu_id: int) -> int:
         async with self.session.begin():
-            await self.session.execute(
+            dishes_count = await self.session.execute(
                     delete(Submenu)
                     .where(Submenu.menu_id == menu_id)
-                    .where(Submenu.id == submenu_id))
+                    .where(Submenu.id == submenu_id)
+                    .returning(Submenu.dishes_count))
+        return dishes_count.first()[0]
 
     async def _check_menu_exists(self, menu_id: int) -> Menu:
         async with self.session.begin():

@@ -23,3 +23,22 @@ class AbstractOperations(ABC):
     @abstractmethod
     async def delete(self, *args) -> Any | None:
         raise NotImplementedError
+
+
+class AbstractCache(ABC):
+
+    @abstractmethod
+    async def get(self, name: str) -> Any | None:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def set(self, name: str, data: Any) -> Any | None:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def delete(self, name: str) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def close(self) -> None:
+        raise NotImplementedError
