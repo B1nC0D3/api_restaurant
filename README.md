@@ -14,6 +14,8 @@
 ```
  API будет доступен по адресу `localhost:8000`. Документация доступна по `localhost:8000/docs`.
 
+Для запуска pre-commit используйте `pre-commit run --all-files`
+
  ---
 
 ## Технологии
