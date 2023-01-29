@@ -17,7 +17,7 @@ class TestSubmenu:
     async def test_submenu_create(self, client):
         data = {
             'title': 'test title',
-            'description': 'test desc'
+            'description': 'test desc',
         }
         response_data = {
             'id': '1',
@@ -37,7 +37,7 @@ class TestSubmenu:
             'id': '1',
             'title': 'test title',
             'description': 'test desc',
-            'dishes_count': 0
+            'dishes_count': 0,
         }
 
         response = await client.get(SUBMENU_URL)
@@ -51,7 +51,7 @@ class TestSubmenu:
             'id': '1',
             'title': 'test title',
             'description': 'test desc',
-            'dishes_count': 0
+            'dishes_count': 0,
         }
 
         response = await client.get(SUBMENU_URL + '1')
@@ -62,7 +62,7 @@ class TestSubmenu:
     @pytest.mark.asyncio
     async def test_submenu_not_found(self, client):
         response_data = {
-            'detail': 'submenu not found'
+            'detail': 'submenu not found',
         }
 
         response = await client.get(SUBMENU_URL + '111')
@@ -74,13 +74,13 @@ class TestSubmenu:
     async def test_submenu_update(self, client):
         updated_data = {
             'title': 'updated title',
-            'description': 'updated desc'
+            'description': 'updated desc',
         }
         response_data = {
             'id': '1',
             'title': 'updated title',
             'description': 'updated desc',
-            'dishes_count': 0
+            'dishes_count': 0,
         }
 
         response = await client.patch(SUBMENU_URL + '1', json=updated_data)
@@ -93,13 +93,13 @@ class TestSubmenu:
         dish_data = {
             'title': 'test title',
             'description': 'test desc',
-            'price': '10.50'
+            'price': '10.50',
         }
         response_data = {
             'id': '1',
             'title': 'updated title',
             'description': 'updated desc',
-            'dishes_count': 2
+            'dishes_count': 2,
         }
 
         await client.post(SUBMENU_URL + '1/dishes/', json=dish_data)
@@ -112,7 +112,7 @@ class TestSubmenu:
     async def test_submenu_delete(self, client):
         response_data = {
             'status': True,
-            'message': 'The submenu has been deleted'
+            'message': 'The submenu has been deleted',
         }
 
         response = await client.delete(SUBMENU_URL + '1')
@@ -146,10 +146,10 @@ class TestSubmenu:
     async def test_submenu_didnt_create_without_menu(self, client):
         data = {
             'title': 'test title',
-            'description': 'description'
+            'description': 'description',
         }
         response_data = {
-            'detail': 'menu not found'
+            'detail': 'menu not found',
         }
 
         response = await client.post('/menus/111/submenus/', json=data)

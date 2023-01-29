@@ -1,16 +1,19 @@
-from fastapi import HTTPException, status, Depends
+from fastapi import Depends, HTTPException, status
 
-from apiv1.models.dish import DishCreate, DishUpdate, DishResponse
-from database.db_operations import menu_cache, submenu_cache, dish_cache
+from apiv1.models.dish import DishCreate, DishResponse, DishUpdate
+from database.db_operations import dish_cache, menu_cache, submenu_cache
 from database.db_operations.dish_operations import DishOperations
+from database.tables import Dish
 
 
 class DishService:
 
-    def __init__(self, operations: DishOperations = Depends(),
-                 m_cache: menu_cache.MenuCache = Depends(),
-                 s_cache: submenu_cache.SubmenuCache = Depends(),
-                 d_cache: dish_cache.DishCache = Depends()):
+    def __init__(
+        self, operations: DishOperations = Depends(),
+        m_cache: menu_cache.MenuCache = Depends(),
+        s_cache: submenu_cache.SubmenuCache = Depends(),
+        d_cache: dish_cache.DishCache = Depends(),
+    ):
         self.operations = operations
         self.menu_cache = m_cache
         self.submenu_cache = s_cache
@@ -23,34 +26,39 @@ class DishService:
         dish = await self.operations.get(submenu_id, dish_id)
         if not dish:
             raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail='dish not found')
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='dish not found',
+            )
         dish = DishResponse.from_orm(dish)
         await self.dish_cache.set(dish_id, dish)
         return dish
 
-    async def get_dishes(self, menu_id: int, submenu_id: int) -> list[DishResponse]:
+    async def get_dishes(self, menu_id: int, submenu_id: int) -> list[Dish]:
         return await self.operations.get_many(submenu_id)
 
     async def create_dish(self, menu_id: int, submenu_id: int, dish_data: DishCreate) -> DishResponse:
         dish = await self.operations.create(submenu_id, dish_data)
         if not dish:
             raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail='submenu not found')
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='submenu not found',
+            )
         dish = DishResponse.from_orm(dish)
         await self.dish_cache.set(int(dish.id), dish)
         await self.menu_cache.set_dishes_count(menu_id, 'add')
         await self.submenu_cache.set_dishes_count(submenu_id, 'add')
         return dish
 
-    async def update_dish(self, menu_id: int, submenu_id: int,
-                          dish_id: int, dish_data: DishUpdate) -> DishResponse:
+    async def update_dish(
+        self, menu_id: int, submenu_id: int,
+        dish_id: int, dish_data: DishUpdate,
+    ) -> DishResponse:
         dish = await self.operations.update(submenu_id, dish_id, dish_data)
         if not dish:
             raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail='submenu not found')
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='submenu not found',
+            )
         dish = DishResponse.from_orm(dish)
         await self.dish_cache.set(dish_id, dish)
         return dish
@@ -60,4 +68,3 @@ class DishService:
         await self.dish_cache.delete(dish_id)
         await self.menu_cache.set_dishes_count(menu_id, 'delete')
         await self.submenu_cache.set_dishes_count(submenu_id, 'delete')
-

@@ -18,13 +18,13 @@ class TestDish:
         data = {
             'title': 'test title',
             'description': 'test desc',
-            'price': '10.50'
+            'price': '10.50',
         }
         response_data = {
             'id': '1',
             'title': 'test title',
             'description': 'test desc',
-            'price': '10.50'
+            'price': '10.50',
         }
         response = await client.post(DISHES_URL, json=data)
 
@@ -37,7 +37,7 @@ class TestDish:
             'id': '1',
             'title': 'test title',
             'description': 'test desc',
-            'price': '10.50'
+            'price': '10.50',
         }
 
         response = await client.get(DISHES_URL)
@@ -51,7 +51,7 @@ class TestDish:
             'id': '1',
             'title': 'test title',
             'description': 'test desc',
-            'price': '10.50'
+            'price': '10.50',
         }
 
         response = await client.get(DISHES_URL + '1')
@@ -62,7 +62,7 @@ class TestDish:
     @pytest.mark.asyncio
     async def test_dish_not_found(self, client):
         response_data = {
-            'detail': 'dish not found'
+            'detail': 'dish not found',
         }
 
         response = await client.get(DISHES_URL + '111')
@@ -75,13 +75,13 @@ class TestDish:
         update_data = {
             'title': 'updated title',
             'description': 'updated description',
-            'price': '100.50'
+            'price': '100.50',
         }
         response_data = {
             'id': '1',
             'title': 'updated title',
             'description': 'updated description',
-            'price': '100.50'
+            'price': '100.50',
         }
 
         response = await client.patch(DISHES_URL + '1', json=update_data)
@@ -106,7 +106,7 @@ class TestDish:
         data = {
             'title': [],
             'description': 'test desc',
-            'price': 10.50
+            'price': 10.50,
         }
 
         response = await client.post(DISHES_URL, json=data)
@@ -118,7 +118,7 @@ class TestDish:
         data = {
             'title': 'test title',
             'description': [],
-            'price': 10.50
+            'price': 10.50,
         }
 
         response = await client.post(DISHES_URL, json=data)
@@ -130,7 +130,7 @@ class TestDish:
         data = {
             'title': 'test title',
             'description': 'test desc',
-            'price': [10.50]
+            'price': [10.50],
         }
 
         response = await client.post(DISHES_URL, json=data)
@@ -145,7 +145,7 @@ class TestDish:
             'price': 10.50,
         }
         response_data = {
-            'detail': 'submenu not found'
+            'detail': 'submenu not found',
         }
 
         response = await client.post('/menus/1/submenus/111/dishes/', json=data)

@@ -1,8 +1,9 @@
-from fastapi import Depends, status, HTTPException
+from fastapi import Depends, HTTPException, status
 
-from apiv1.models.menu import MenuResponse, MenuCreate, MenuUpdate
+from apiv1.models.menu import MenuCreate, MenuResponse, MenuUpdate
 from database.db_operations.menu_cache import MenuCache
 from database.db_operations.menu_operations import MenuOperations
+from database.tables import Menu
 
 
 class MenuService:
@@ -17,13 +18,15 @@ class MenuService:
             return cache
         menu = await self.operations.get(menu_id)
         if not menu:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                detail='menu not found')
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='menu not found',
+            )
         menu = MenuResponse.from_orm(menu)
         await self.cache.set(menu_id, menu)
         return menu
 
-    async def get_menus(self) -> list[MenuResponse]:
+    async def get_menus(self) -> list[Menu]:
         menus = await self.operations.get_many()
         return menus
 
@@ -36,8 +39,10 @@ class MenuService:
     async def update_menu(self, menu_id: int, menu_data: MenuUpdate) -> MenuResponse:
         menu = await self.operations.update(menu_id, menu_data)
         if not menu:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                detail='menu not found')
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='menu not found',
+            )
         menu = MenuResponse.from_orm(menu)
         await self.cache.set(menu_id, menu)
         return menu

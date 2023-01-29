@@ -7,7 +7,7 @@ MENU_URL = '/menus/'
 class TestMenu:
 
     @pytest.mark.asyncio
-    async def test_get_menus_blank(self, client, ):
+    async def test_get_menus_blank(self, client):
         response = await client.get(MENU_URL)
 
         assert response.status_code == status.HTTP_200_OK
@@ -17,14 +17,14 @@ class TestMenu:
     async def test_menu_create(self, client):
         data = {
             'title': 'test title',
-            'description': 'test desc'
+            'description': 'test desc',
         }
         response_data = {
             'id': '1',
             'title': 'test title',
             'description': 'test desc',
             'submenus_count': 0,
-            'dishes_count': 0
+            'dishes_count': 0,
         }
 
         response = await client.post(MENU_URL, json=data)
@@ -39,7 +39,7 @@ class TestMenu:
             'title': 'test title',
             'description': 'test desc',
             'submenus_count': 0,
-            'dishes_count': 0
+            'dishes_count': 0,
         }
 
         response = await client.get(MENU_URL)
@@ -54,7 +54,7 @@ class TestMenu:
             'title': 'test title',
             'description': 'test desc',
             'submenus_count': 0,
-            'dishes_count': 0
+            'dishes_count': 0,
         }
 
         response = await client.get(MENU_URL + '1')
@@ -65,7 +65,7 @@ class TestMenu:
     @pytest.mark.asyncio
     async def test_menu_not_found(self, client):
         response_data = {
-            'detail': 'menu not found'
+            'detail': 'menu not found',
         }
 
         response = await client.get(MENU_URL + '111')
@@ -77,14 +77,14 @@ class TestMenu:
     async def test_menu_update(self, client):
         update_data = {
             'title': 'updated title',
-            'description': 'updated desc'
+            'description': 'updated desc',
         }
         response_data = {
             'id': '1',
             'title': 'updated title',
             'description': 'updated desc',
             'submenus_count': 0,
-            'dishes_count': 0
+            'dishes_count': 0,
         }
 
         response = await client.patch(MENU_URL + '1', json=update_data)
@@ -100,11 +100,11 @@ class TestMenu:
             'title': 'updated title',
             'description': 'updated desc',
             'submenus_count': 2,
-            'dishes_count': 0
+            'dishes_count': 0,
         }
         submenu_data = {
             'title': 'test title',
-            'description': 'test desc'
+            'description': 'test desc',
         }
 
         await client.post(MENU_URL + '1/submenus/', json=submenu_data)
@@ -121,7 +121,7 @@ class TestMenu:
             'title': 'updated title',
             'description': 'updated desc',
             'submenus_count': 2,
-            'dishes_count': 2
+            'dishes_count': 2,
         }
         dish_data = {
             'title': 'test title',
@@ -139,7 +139,7 @@ class TestMenu:
     async def test_post_delete(self, client):
         response_data = {
             'status': True,
-            'message': 'The menu has been deleted'
+            'message': 'The menu has been deleted',
         }
 
         response = await client.delete(MENU_URL + '1')

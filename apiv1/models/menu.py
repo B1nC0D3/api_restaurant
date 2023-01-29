@@ -1,4 +1,4 @@
-from .base import BaseItem
+from apiv1.models.base_models import BaseItem
 
 
 class MenuCreate(BaseItem):

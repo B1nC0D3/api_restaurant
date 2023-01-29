@@ -3,7 +3,7 @@ import json
 import redis.asyncio as redis
 
 from apiv1.models.submenu import SubmenuResponse
-from database.db_operations.base import AbstractCache
+from database.db_operations.abstract_models import AbstractCache
 from settings import settings
 
 
@@ -18,8 +18,10 @@ class SubmenuCache(AbstractCache):
         submenu = json.loads(hashed_submenu)
         return SubmenuResponse.parse_obj(submenu)
 
-    async def set(self, submenu_id: int, submenu_data: SubmenuResponse,
-                  expiration: int = 60*60):
+    async def set(
+        self, submenu_id: int, submenu_data: SubmenuResponse,
+        expiration: int = 60 * 60,
+    ):
         hashed_submenu = json.dumps(submenu_data.dict())
         await self.redis.set(submenu_id, hashed_submenu, ex=expiration)
 

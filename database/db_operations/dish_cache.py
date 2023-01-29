@@ -3,7 +3,7 @@ import json
 import redis.asyncio as redis
 
 from apiv1.models.dish import DishResponse
-from database.db_operations.base import AbstractCache
+from database.db_operations.abstract_models import AbstractCache
 from settings import settings
 
 
@@ -18,8 +18,10 @@ class DishCache(AbstractCache):
         dish = json.loads(hashed_dish)
         return DishResponse.parse_obj(dish)
 
-    async def set(self, dish_id: int, dish_data: DishResponse,
-                  expiration: int = 60*60):
+    async def set(
+        self, dish_id: int, dish_data: DishResponse,
+        expiration: int = 60 * 60,
+    ):
         hashed_dish = json.dumps(dish_data.dict())
         await self.redis.set(dish_id, hashed_dish, ex=expiration)
 

@@ -3,19 +3,21 @@ import asyncio
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from database.database import get_session, Base
+from database.database import Base, get_session
 from main import app
 
 TEST_DB_URL = 'postgresql+asyncpg://postgres:postgres@db:5432/postgres'
 
 engine = create_async_engine(TEST_DB_URL)
 
-TestSession = sessionmaker(engine,
-                           class_=AsyncSession,
-                           expire_on_commit=False)
+TestSession = sessionmaker(
+    engine,
+    class_=AsyncSession,
+    expire_on_commit=False,
+)
 
 
 @pytest.fixture(scope='session')
@@ -58,7 +60,7 @@ async def client(test_session):
 async def create_menu(client):
     data = {
         'title': 'test title',
-        'description': 'test desc'
+        'description': 'test desc',
     }
     await client.post('/menus/', json=data)
 
@@ -67,6 +69,6 @@ async def create_menu(client):
 async def create_submenu(client):
     data = {
         'title': 'test title',
-        'description': 'test desc'
+        'description': 'test desc',
     }
     await client.post('/menus/1/submenus/', json=data)

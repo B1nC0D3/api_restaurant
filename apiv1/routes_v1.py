@@ -1,9 +1,10 @@
 from fastapi import APIRouter
 
-from .routes import dishes, menus, submenus
+from apiv1.routes import dishes, menus, submenus
 
 router = APIRouter(
-    prefix='/api/v1')
+    prefix='/api/v1',
+)
 
 router.include_router(menus.router, tags=['menu'])
 router.include_router(submenus.router, tags=['submenu'])

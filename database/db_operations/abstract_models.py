@@ -28,15 +28,15 @@ class AbstractOperations(ABC):
 class AbstractCache(ABC):
 
     @abstractmethod
-    async def get(self, name: str) -> Any | None:
+    async def get(self, name: int) -> Any | None:
         raise NotImplementedError
 
     @abstractmethod
-    async def set(self, name: str, data: Any) -> Any | None:
+    async def set(self, name: int, data: Any) -> Any | None:
         raise NotImplementedError
 
     @abstractmethod
-    async def delete(self, name: str) -> None:
+    async def delete(self, name: int) -> None:
         raise NotImplementedError
 
     @abstractmethod

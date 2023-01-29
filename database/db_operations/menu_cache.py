@@ -3,7 +3,7 @@ import json
 import redis.asyncio as redis
 
 from apiv1.models.menu import MenuResponse
-from database.db_operations.base import AbstractCache
+from database.db_operations.abstract_models import AbstractCache
 from settings import settings
 
 
@@ -18,8 +18,10 @@ class MenuCache(AbstractCache):
         menu = json.loads(hashed_menu)
         return MenuResponse.parse_obj(menu)
 
-    async def set(self, menu_id: int, menu_data: MenuResponse,
-                  expiration: int = 60*60):
+    async def set(
+        self, menu_id: int, menu_data: MenuResponse,
+        expiration: int = 60 * 60,
+    ):
         hashed_menu = json.dumps(menu_data.dict())
         await self.redis.set(menu_id, hashed_menu, ex=expiration)
 

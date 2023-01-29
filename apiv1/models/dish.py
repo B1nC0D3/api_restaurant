@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from .base import BaseItem
+from apiv1.models.base_models import BaseItem
 
 
 class BaseDish(BaseItem):
