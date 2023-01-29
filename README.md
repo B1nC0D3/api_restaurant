@@ -24,5 +24,6 @@
 - FastAPI
 - SQLAlchemy
 - PostgresSQL
+- Redis
 - Pytest
 - Docker
