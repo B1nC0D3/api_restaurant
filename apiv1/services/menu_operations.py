@@ -58,5 +58,5 @@ class MenuService(BaseService):
     async def _is_author(self, user_id: int, author_id: int):
         if user_id != author_id:
             raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
+                    status_code=status.HTTP_403_FORBIDDEN,
                     detail='You are not the author')
