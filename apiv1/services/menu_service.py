@@ -33,6 +33,10 @@ class MenuService:
 
     async def create_menu(self, menu_data: MenuCreate) -> MenuResponse:
         menu = await self.operations.create(menu_data)
+        if not menu:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Cant create menu"
+            )
         parsed_menu = MenuResponse.from_orm(menu)
         await self.cache.set(int(menu.id), parsed_menu)
         return parsed_menu

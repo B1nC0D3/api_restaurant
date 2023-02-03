@@ -24,14 +24,14 @@ class MenuOperations(AbstractOperations):
             menus = await self.session.execute(select(Menu))
         return menus.scalars().all()
 
-    async def create(self, menu_data: MenuCreate) -> Menu:
+    async def create(self, menu_data: MenuCreate) -> Menu | None:
         async with self.session.begin():
             menu = await self.session.execute(
                 insert(Menu)
                 .values(**menu_data.dict())
                 .returning(Menu, Menu.submenus_count, Menu.dishes_count),
             )
-        return await self._menu_data_to_model(menu.first())  # type: ignore
+        return await self._menu_data_to_model(menu.first())
 
     async def update(self, menu_id: int, menu_data: MenuUpdate) -> Menu | None:
         async with self.session.begin():
