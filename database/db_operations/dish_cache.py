@@ -1,6 +1,6 @@
 import json
 
-import redis.asyncio as redis
+import redis.asyncio as redis  # type: ignore
 
 from apiv1.models.dish import DishResponse
 from database.db_operations.abstract_models import AbstractCache
@@ -19,7 +19,9 @@ class DishCache(AbstractCache):
         return DishResponse.parse_obj(dish)
 
     async def set(
-        self, dish_id: int, dish_data: DishResponse,
+        self,
+        dish_id: int,
+        dish_data: DishResponse,
         expiration: int = 60 * 60,
     ):
         hashed_dish = json.dumps(dish_data.dict())

@@ -1,6 +1,6 @@
 import json
 
-import redis.asyncio as redis
+import redis.asyncio as redis  # type: ignore
 
 from apiv1.models.menu import MenuResponse
 from database.db_operations.abstract_models import AbstractCache
@@ -19,7 +19,9 @@ class MenuCache(AbstractCache):
         return MenuResponse.parse_obj(menu)
 
     async def set(
-        self, menu_id: int, menu_data: MenuResponse,
+        self,
+        menu_id: int,
+        menu_data: MenuResponse,
         expiration: int = 60 * 60,
     ):
         hashed_menu = json.dumps(menu_data.dict())
@@ -33,7 +35,9 @@ class MenuCache(AbstractCache):
 
     async def set_submenus_count(self, menu_id: int, action: str):
         menu = await self.get(menu_id)
-        if action == 'add':
+        if not menu:
+            return None
+        if action == "add":
             menu.submenus_count += 1
         else:
             menu.submenus_count -= 1
@@ -41,7 +45,9 @@ class MenuCache(AbstractCache):
 
     async def set_dishes_count(self, menu_id: int, action: str):
         menu = await self.get(menu_id)
-        if action == 'add':
+        if not menu:
+            return None
+        if action == "add":
             menu.dishes_count += 1
         else:
             menu.dishes_count -= 1

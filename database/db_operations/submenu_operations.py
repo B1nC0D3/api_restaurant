@@ -9,7 +9,6 @@ from database.tables import Menu, Submenu
 
 
 class SubmenuOperations(AbstractOperations):
-
     def __init__(self, session: AsyncSession = Depends(get_session)):
         self.session = session
 
@@ -22,11 +21,10 @@ class SubmenuOperations(AbstractOperations):
             )
         return submenu.scalars().first()
 
-    async def get_many(self, menu_id: int) -> list[Submenu]:
+    async def get_many(self, menu_id: int) -> list[Submenu | None]:
         async with self.session.begin():
             submenus = await self.session.execute(
-                select(Submenu)
-                .filter(Submenu.menu_id == menu_id),
+                select(Submenu).filter(Submenu.menu_id == menu_id),
             )
         return submenus.scalars().all()
 
@@ -42,9 +40,11 @@ class SubmenuOperations(AbstractOperations):
         return await self._submenu_data_to_model(submenu.first())
 
     async def update(
-        self, menu_id: int, submenu_id: int,
+        self,
+        menu_id: int,
+        submenu_id: int,
         submenu_data: SubmenuUpdate,
-    ) -> Submenu:
+    ) -> Submenu | None:
         async with self.session.begin():
             submenu = await self.session.execute(
                 update(Submenu)
@@ -68,8 +68,7 @@ class SubmenuOperations(AbstractOperations):
     async def _check_menu_exists(self, menu_id: int) -> Menu:
         async with self.session.begin():
             menu = await self.session.execute(
-                select(Menu)
-                .filter(Menu.id == menu_id),
+                select(Menu).filter(Menu.id == menu_id),
             )
         return menu.scalars().first()
 

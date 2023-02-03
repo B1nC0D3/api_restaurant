@@ -17,7 +17,7 @@ class DishUpdate(BaseDish):
 
 class DishResponse(BaseDish):
     id: str
-    price: str
+    price: str  # type: ignore
 
     class Config:
         orm_mode = True

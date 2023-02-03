@@ -1,6 +1,6 @@
 import json
 
-import redis.asyncio as redis
+import redis.asyncio as redis  # type: ignore
 
 from apiv1.models.submenu import SubmenuResponse
 from database.db_operations.abstract_models import AbstractCache
@@ -19,7 +19,9 @@ class SubmenuCache(AbstractCache):
         return SubmenuResponse.parse_obj(submenu)
 
     async def set(
-        self, submenu_id: int, submenu_data: SubmenuResponse,
+        self,
+        submenu_id: int,
+        submenu_data: SubmenuResponse,
         expiration: int = 60 * 60,
     ):
         hashed_submenu = json.dumps(submenu_data.dict())
@@ -33,7 +35,9 @@ class SubmenuCache(AbstractCache):
 
     async def set_dishes_count(self, submenu_id: int, action: str):
         submenu = await self.get(submenu_id)
-        if action == 'add':
+        if not submenu:
+            return None
+        if action == "add":
             submenu.dishes_count += 1
         else:
             submenu.dishes_count -= 1

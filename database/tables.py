@@ -5,50 +5,52 @@ from database.database import Base
 
 
 class Dish(Base):
-    __tablename__ = 'dishes'
+    __tablename__ = "dishes"
 
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     title = Column(String)
     description = Column(String)
     price = Column(Numeric(10, 2))
     submenu_id = Column(
-        Integer, ForeignKey(
-            'submenus.id', ondelete='CASCADE',
-        ), index=True,
+        Integer,
+        ForeignKey(
+            "submenus.id",
+            ondelete="CASCADE",
+        ),
+        index=True,
     )
-    submenu = relationship('Submenu', back_populates='dishes')
+    submenu = relationship("Submenu", back_populates="dishes")
 
 
 class Submenu(Base):
-    __tablename__ = 'submenus'
+    __tablename__ = "submenus"
 
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     title = Column(String)
     description = Column(String)
     menu_id = Column(
-        Integer, ForeignKey(
-            'menus.id', ondelete='CASCADE',
-        ), index=True,
+        Integer,
+        ForeignKey(
+            "menus.id",
+            ondelete="CASCADE",
+        ),
+        index=True,
     )
-    menu = relationship('Menu', back_populates='submenus', lazy='selectin')
-    dishes = relationship('Dish', back_populates='submenu')
+    menu = relationship("Menu", back_populates="submenus", lazy="selectin")
+    dishes = relationship("Dish", back_populates="submenu")
     dishes_count = column_property(
-        select(func.count(Dish.id))
-        .filter(Dish.submenu_id == id)
-        .scalar_subquery(),
+        select(func.count(Dish.id)).filter(Dish.submenu_id == id).scalar_subquery(),
     )
 
 
 class Menu(Base):
-    __tablename__ = 'menus'
+    __tablename__ = "menus"
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     title = Column(String)
     description = Column(String)
-    submenus = relationship('Submenu', back_populates='menu', lazy='selectin')
+    submenus = relationship("Submenu", back_populates="menu", lazy="selectin")
     submenus_count = column_property(
-        select(func.count(Submenu.id))
-        .filter(Submenu.menu_id == id)
-        .scalar_subquery(),
+        select(func.count(Submenu.id)).filter(Submenu.menu_id == id).scalar_subquery(),
     )
     dishes_count = column_property(
         select(func.count(Dish.id))

@@ -9,7 +9,6 @@ from database.tables import Dish, Submenu
 
 
 class DishOperations(AbstractOperations):
-
     def __init__(self, session: AsyncSession = Depends(get_session)):
         self.session = session
 
@@ -22,11 +21,10 @@ class DishOperations(AbstractOperations):
             )
         return dish.scalars().first()
 
-    async def get_many(self, submenu_id: int) -> list[Dish]:
+    async def get_many(self, submenu_id: int) -> list[Dish | None]:
         async with self.session.begin():
             dishes = await self.session.execute(
-                select(Dish)
-                .filter(Dish.submenu_id == submenu_id),
+                select(Dish).filter(Dish.submenu_id == submenu_id),
             )
         return dishes.scalars().all()
 
@@ -36,17 +34,16 @@ class DishOperations(AbstractOperations):
         async with self.session.begin():
             dish = await self.session.execute(
                 insert(Dish)
-                .values(
-                    submenu_id=submenu_id,
-                    **dish_data.dict()
-                )
+                .values(submenu_id=submenu_id, **dish_data.dict())
                 .returning(Dish),
             )
         return dish.first()
 
     async def update(
-        self, submenu_id: int,
-        dish_id: int, dish_data: DishUpdate,
+        self,
+        submenu_id: int,
+        dish_id: int,
+        dish_data: DishUpdate,
     ) -> Dish:
         async with self.session.begin():
             dish = await self.session.execute(
@@ -69,7 +66,6 @@ class DishOperations(AbstractOperations):
     async def _check_submenu_existence(self, submenu_id: int) -> Submenu | None:
         async with self.session.begin():
             submenu = await self.session.execute(
-                select(Submenu)
-                .where(Submenu.id == submenu_id),
+                select(Submenu).where(Submenu.id == submenu_id),
             )
         return submenu.scalars().first()

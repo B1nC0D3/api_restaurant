@@ -7,8 +7,9 @@ from database.tables import Menu
 
 
 class MenuService:
-
-    def __init__(self, operations: MenuOperations = Depends(), cache: MenuCache = Depends()):
+    def __init__(
+        self, operations: MenuOperations = Depends(), cache: MenuCache = Depends()
+    ):
         self.operations = operations
         self.cache = cache
 
@@ -20,32 +21,32 @@ class MenuService:
         if not menu:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail='menu not found',
+                detail="menu not found",
             )
         menu = MenuResponse.from_orm(menu)
         await self.cache.set(menu_id, menu)
         return menu
 
-    async def get_menus(self) -> list[Menu]:
+    async def get_menus(self) -> list[Menu | None]:
         menus = await self.operations.get_many()
         return menus
 
     async def create_menu(self, menu_data: MenuCreate) -> MenuResponse:
         menu = await self.operations.create(menu_data)
-        menu = MenuResponse.from_orm(menu)
-        await self.cache.set(int(menu.id), menu)
-        return menu
+        parsed_menu = MenuResponse.from_orm(menu)
+        await self.cache.set(int(menu.id), parsed_menu)
+        return parsed_menu
 
     async def update_menu(self, menu_id: int, menu_data: MenuUpdate) -> MenuResponse:
         menu = await self.operations.update(menu_id, menu_data)
         if not menu:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail='menu not found',
+                detail="menu not found",
             )
-        menu = MenuResponse.from_orm(menu)
+        parsed_menu = MenuResponse.from_orm(menu)
         await self.cache.set(menu_id, menu)
-        return menu
+        return parsed_menu
 
     async def delete_menu(self, menu_id: int) -> None:
         await self.operations.delete(menu_id)
