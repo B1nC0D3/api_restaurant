@@ -1,12 +1,16 @@
 import json
 
-from fastapi import Depends, HTTPException, status
+from celery.result import AsyncResult
+from fastapi import Depends
+from fastapi import HTTPException, status
 
 from apiv1.models.dish import DishCreate
 from apiv1.models.menu import MenuCreate
 from apiv1.models.submenu import SubmenuCreate
+from apiv1.models.task import MenuTask
+from celery_tasks.tasks import start_creating_excel_file
 from database.db_operations.dish_operations import DishOperations
-from database.db_operations.menu_operations import MenuOperations
+from database.db_operations.menu_operations import MenuOperations, CeleryOperations
 from database.db_operations.submenu_operations import SubmenuOperations
 from database.tables import Menu, Submenu, Dish
 
@@ -35,12 +39,6 @@ class TaskService:
                 for dish_data in dishes.values():
                     await self._create_dish(submenu.id, dish_data)
 
-    async def create_task_to_excel_file(self):
-        pass
-
-    async def get_excel_file_by_task_id(self, task_id: str):
-        pass
-
     async def _create_menu(self, menu_data: dict) -> Menu:
         parsed_menu = MenuCreate.parse_obj(menu_data)
         menu = await self.menu_operations.create(parsed_menu)
@@ -67,3 +65,28 @@ class TaskService:
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail='Cant create dish')
         return dish
+
+
+class CeleryService:
+    def __init__(self, operations: CeleryOperations = Depends()):
+        self.operations = operations
+
+    async def create_task_to_excel_file(self):
+        raw_menus = await self.operations.get_all_to_celery()
+        menus = []
+        for menu in raw_menus:
+            menus.append(MenuTask.from_orm(menu).dict())
+        task = start_creating_excel_file.delay(menus)
+        return {'task_id': task.id,
+                'task_status': task.status}
+
+    async def get_excel_file_by_task_id(self, task_id: str):
+        task = AsyncResult(task_id)
+        if task.status != 'SUCCESS':
+            raise HTTPException(
+                    status_code=status.HTTP_425_TOO_EARLY,
+                    detail=f'Task not ready or failed. Task status {task.status}'
+            )
+        return {'path': task.result,
+                'media_type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'filename': 'menus'}

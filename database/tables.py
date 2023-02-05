@@ -36,8 +36,8 @@ class Submenu(Base):
         ),
         index=True,
     )
-    menu = relationship("Menu", back_populates="submenus", lazy="selectin")
-    dishes = relationship("Dish", back_populates="submenu")
+    menu = relationship("Menu", back_populates="submenus")
+    dishes = relationship("Dish", back_populates="submenu", lazy='joined')
     dishes_count = column_property(
         select(func.count(Dish.id)).filter(Dish.submenu_id == id).scalar_subquery(),
     )
@@ -48,7 +48,7 @@ class Menu(Base):
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     title = Column(String)
     description = Column(String)
-    submenus = relationship("Submenu", back_populates="menu", lazy="selectin")
+    submenus = relationship("Submenu", back_populates="menu", lazy="joined")
     submenus_count = column_property(
         select(func.count(Submenu.id)).filter(Submenu.menu_id == id).scalar_subquery(),
     )

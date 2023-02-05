@@ -26,7 +26,7 @@ class SubmenuOperations(AbstractOperations):
             submenus = await self.session.execute(
                 select(Submenu).filter(Submenu.menu_id == menu_id),
             )
-        return submenus.scalars().all()
+        return submenus.unique().scalars().all()
 
     async def create(self, menu_id: int, submenu_data: SubmenuCreate) -> Submenu | None:
         if not await self._check_menu_exists(menu_id):

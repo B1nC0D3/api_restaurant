@@ -26,7 +26,7 @@ class DishOperations(AbstractOperations):
             dishes = await self.session.execute(
                 select(Dish).filter(Dish.submenu_id == submenu_id),
             )
-        return dishes.scalars().all()
+        return dishes.unique().scalars().all()
 
     async def create(self, submenu_id: int, dish_data: DishCreate) -> Dish | None:
         if not await self._check_submenu_existence(submenu_id):

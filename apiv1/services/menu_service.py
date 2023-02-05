@@ -49,7 +49,7 @@ class MenuService:
                 detail="menu not found",
             )
         parsed_menu = MenuResponse.from_orm(menu)
-        await self.cache.set(menu_id, menu)
+        await self.cache.set(menu_id, parsed_menu)
         return parsed_menu
 
     async def delete_menu(self, menu_id: int) -> None:
