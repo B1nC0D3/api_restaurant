@@ -25,5 +25,7 @@
 - SQLAlchemy
 - PostgresSQL
 - Redis
+- Celery
+- RabbitMQ
 - Pytest
 - Docker
