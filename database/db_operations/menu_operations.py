@@ -64,13 +64,12 @@ class MenuOperations(AbstractOperations):
 
 
 class CeleryOperations:
-
     def __init__(self, session: AsyncSession = Depends(get_session)):
         self.session = session
 
     async def get_all_to_celery(self) -> list[Menu | None]:
         menus = await self.session.execute(
-                select(Menu)
-                .options(selectinload(Menu.submenus)))
+            select(Menu).options(selectinload(Menu.submenus))
+        )
         menus = menus.unique().scalars().all()
         return menus

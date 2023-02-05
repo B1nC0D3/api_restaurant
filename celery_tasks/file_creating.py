@@ -6,12 +6,12 @@ from apiv1.models.task import MenuTask
 
 
 def create_excel_file(raw_menus: dict, task_id: str) -> str:
-    path = 'files/'
-    file_path = f'{path}/{task_id}.xlsx'
+    path = "files/"
+    file_path = f"{path}/{task_id}.xlsx"
     if not os.path.exists(path):
         os.makedirs(path)
     workbook = xlsxwriter.Workbook(file_path)
-    worksheet = workbook.add_worksheet('Menus')
+    worksheet = workbook.add_worksheet("Menus")
     row = 0
 
     for menu_cnt, raw_menu in enumerate(raw_menus, 1):
