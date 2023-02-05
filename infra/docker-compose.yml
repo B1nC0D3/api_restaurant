@@ -33,6 +33,21 @@ services:
       timeout: 20s
       retries: 100
 
+  rabbitmq:
+    container_name: restaurant_rabbitmq
+    image: rabbitmq:latest
+    restart: always
+    volumes:
+      - ./rabbitmq:/var/lib/rabbitmq/mnesia
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 5s
+      timeout: 20s
+      retries: 100
+
   web:
     container_name: restaurant_web
     build:
@@ -50,4 +65,21 @@ services:
       db:
         condition: service_healthy
       redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  celery_worker:
+    container_name: restaurant_celery_worker
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - ../.env
+    volumes:
+      - ../:/app
+    command: celery --app=celery_tasks.tasks worker --loglevel=info
+    depends_on:
+      rabbitmq:
         condition: service_healthy
