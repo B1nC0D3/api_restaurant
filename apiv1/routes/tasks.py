@@ -13,7 +13,7 @@ async def create_test_data(task_service: TaskService = Depends()):
 
 
 @router.post("/create_excel_file", status_code=status.HTTP_202_ACCEPTED)
-async def create_excel_file(celery_service: CeleryService = Depends()):
+async def start_task_to_create_excel_file(celery_service: CeleryService = Depends()):
     return await celery_service.create_task_to_excel_file()
 
 
