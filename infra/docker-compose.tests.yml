@@ -18,6 +18,7 @@ services:
   db:
     image: postgres:15.1-alpine
     restart: always
+    user: postgres
     volumes:
       - /var/lib/postgresql/data/
     env_file:
