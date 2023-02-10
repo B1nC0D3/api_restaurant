@@ -62,7 +62,7 @@ class DishService(BaseService):
         menu = await self.session.execute(
                 select(Menu)
                 .filter(Menu.id == menu_id))
-        menu = menu.scalars.first()
+        menu = menu.scalars().first()
         if not menu:
             raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -81,6 +81,7 @@ class DishService(BaseService):
 
     async def _is_author(self, menu_id: int, user_id: int):
         menu = await self._check_menu_existence(menu_id)
+
         if menu.user_id != user_id:
             raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN,

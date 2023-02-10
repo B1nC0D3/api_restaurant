@@ -22,7 +22,7 @@ class SubmenuService(BaseService):
         return submenus
 
     async def create(self, menu_id: int, user_id: int, submenu_data: SubmenuCreate) -> Submenu:
-        await self._check_menu_exists(menu_id)
+        await self._check_menu_existence(menu_id)
         await self._is_author(menu_id, user_id)
         submenu = Submenu(**submenu_data.dict(), menu_id=menu_id)
         self.session.add(submenu)
@@ -59,18 +59,19 @@ class SubmenuService(BaseService):
             )
         return submenu
 
-    async def _check_menu_exists(self, menu_id: int):
-        menu = await self.session.execute(select(Menu)
-                                          .filter(Menu.id == menu_id))
-        menu = menu.scalars().first()
-        if not menu:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                                detail='menu not found')
-
-    async def _is_author(self, menu_id: int, user_id: int):
+    async def _check_menu_existence(self, menu_id: int) -> Menu:
         menu = await self.session.execute(
                 select(Menu)
                 .filter(Menu.id == menu_id))
+        menu = menu.scalars().first()
+        if not menu:
+            raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail='Menu not found')
+        return menu
+
+    async def _is_author(self, menu_id: int, user_id: int):
+        menu = await self._check_menu_existence(menu_id)
         if menu.user_id != user_id:
             raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN,
